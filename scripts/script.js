@@ -97,7 +97,8 @@ const loadDetails = (data) =>{
     description.innerText = data.description;
 
     //plan & pricing
-    console.log(data.pricing[0].price);
+    
+    console.log(data.pricing);
     const price = document.getElementById("price1");
     const price2 = document.getElementById("price2");
     const price3 = document.getElementById("price3");
@@ -105,13 +106,21 @@ const loadDetails = (data) =>{
     const plan2 = document.getElementById("plan2");
     const plan3 = document.getElementById("plan3");
 
-    price.innerText = data.pricing[0].price;
-    price2.innerText = data.pricing[1].price;
-    price3.innerText = data.pricing[2].price;
-    plan1.innerText = data.pricing[0].plan;
-    plan2.innerText = data.pricing[1].plan;
-    plan3.innerText = data.pricing[2].plan;
-
+    if(data.pricing !== null){
+        price.innerText = data.pricing[0].price;
+        price2.innerText = data.pricing[1].price;
+        price3.innerText = data.pricing[2].price;
+        plan1.innerText = data.pricing[0].plan;
+        plan2.innerText = data.pricing[1].plan;
+        plan3.innerText = data.pricing[2].plan;
+    }else{
+        price.innerText = "Free of Cost";
+        price2.innerText = "Free of Cost";
+        price3.innerText = "Free of Cost";
+        plan1.innerText = "";
+        plan2.innerText = "";
+        plan3.innerText = "";
+    }
 
     // features
 
@@ -142,8 +151,8 @@ const loadDetails = (data) =>{
     }
     image.src = `${data.image_link[0]}`;
     if(data.input_output_examples === null){        
-        demoHeading.innerText = "No data Found";
-        demoResponse.innerText = "";
+        demoHeading.innerText = "Can you give any example?";
+        demoResponse.innerText = "No! Not yet! Take a break!!!";
     }else{
     demoHeading.innerText = data.input_output_examples[0].input;
     demoResponse.innerText = data.input_output_examples[0].output;   
