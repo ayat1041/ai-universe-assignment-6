@@ -1,21 +1,34 @@
-const apiload = async(key=0) => {
+const apiload = async(key=0,sort=0) => {
     try {
         const res = await fetch("https://openapi.programming-hero.com/api/ai/tools");
         const data = await res.json();
-        display(data.data.tools,key);
+        display(data.data.tools,key,sort);
     }
     catch (error) {
         console.log(error);
     }
 }
 
-const display = (data,key=0) => {
+const display = (data,key=0,sort=0) => {
+
     let newArray;
     if(key === 0){
         newArray = Array.prototype.slice.call(data, 0, 6);
     }else{
         newArray = data;
     }
+    if(sort !== 0){
+        newArray.sort(function(a, b) {
+            const first = new Date(a.published_in);
+            const second = new Date(b.published_in);
+            return first - second;
+          });
+          
+          console.log(newArray);
+    }else{
+        console.log("unsorted");
+    }
+
     const container = document.getElementById("container");
     container.innerHTML = "";
     newArray.forEach(element => {
@@ -57,6 +70,9 @@ const display = (data,key=0) => {
         document.getElementById('show-more').classList.add("d-none");
         apiload(1)
     });
+    document.getElementById("sort-by-date").addEventListener('click', function(){
+        apiload(0,1)
+    })
 
 apiload()
 
