@@ -162,7 +162,7 @@ const loadDetails = (data) =>{
     if(!data.accuracy.score){
         accuracy.classList.add("d-none");
     }else{
-        accuracy.innerText = `${data.accuracy.score*100}%`;
+        accuracy.innerText = `${data.accuracy.score*100}% accuracy`;
         accuracy.classList.remove("d-none");
     }
 }
