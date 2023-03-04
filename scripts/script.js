@@ -1,4 +1,5 @@
 const apiload = async(key=0,sort=0) => {
+    toggleSpinner(true)
     try {
         const res = await fetch("https://openapi.programming-hero.com/api/ai/tools");
         const data = await res.json();
@@ -61,6 +62,7 @@ const display = (data,key=0,sort=0) => {
                     </div>`
         container.appendChild(newCardContainer);
         })
+    toggleSpinner(false)
     }
 
     document.getElementById("show-more").addEventListener('click', function(){
@@ -164,6 +166,17 @@ const loadDetails = (data) =>{
         accuracy.classList.remove("d-none");
     }
 }
+
+const toggleSpinner = (isLoading) => {
+    const loaderSection = document.getElementById("spinner");
+    if(isLoading){
+        loaderSection.classList.remove('d-none');
+        loaderSection.classList.add('d-flex');
+    }else{
+        loaderSection.classList.add('d-none');
+    }
+}
+
 apiload()
 
 
