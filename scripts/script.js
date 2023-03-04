@@ -23,8 +23,6 @@ const display = (data,key=0,sort=0) => {
             const second = new Date(b.published_in);
             return first - second;
           });
-          
-          console.log(newArray);
     }else{
         console.log("unsorted");
     }
@@ -48,7 +46,6 @@ const display = (data,key=0,sort=0) => {
             newOl.appendChild(list);
         }
         newCardContainer.appendChild(newOl);
-
         newCardContainer.innerHTML += `<hr class="my-0">
                     <p class="mt-4" style="font-weight: 700; font-size: 22px;">${element.name}</p>
                     <div class="d-flex align-items-center justify-content-between">
@@ -57,7 +54,7 @@ const display = (data,key=0,sort=0) => {
                             <h1 class="h6 ms-2 m-0" style="color:#585858;">${element.published_in}</h1>
                         </div>
                     </div>
-                    <div class="rounded-circle text-center pt-1 position-absolute"
+                    <div onClick="detailApi(${element.id})" class="rounded-circle text-center pt-1 position-absolute"
                             style="height: 32px; width:32px; background-color: #EB575720; right:22px; bottom:44px; padding-left: 2px;"
                                     role="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                         <i class="fa-solid fa-arrow-right" style="color:#EB5757"></i>
@@ -71,9 +68,93 @@ const display = (data,key=0,sort=0) => {
         apiload(1)
     });
     document.getElementById("sort-by-date").addEventListener('click', function(){
-        apiload(0,1)
+        document.getElementById('show-more').classList.add("d-none");
+        apiload(1,1)
     })
 
+
+
+
+    // single data details
+const detailApi = async(id) =>{
+    try {
+        url = `https://openapi.programming-hero.com/api/ai/tool/${id.toString().padStart(2, '0')}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        loadDetails(data.data);
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+
+const loadDetails = (data) =>{
+    const description = document.getElementById("card-description");
+    const image = document.getElementById("card-image");
+    const demoHeading = document.getElementById("demo-heading");
+    const demoResponse = document.getElementById("demo-response");
+    const accuracy = document.getElementById("accuracy");
+    description.innerText = data.description;
+
+    //plan & pricing
+    console.log(data.pricing[0].price);
+    const price = document.getElementById("price1");
+    const price2 = document.getElementById("price2");
+    const price3 = document.getElementById("price3");
+    const plan1 = document.getElementById("plan1");
+    const plan2 = document.getElementById("plan2");
+    const plan3 = document.getElementById("plan3");
+
+    price.innerText = data.pricing[0].price;
+    price2.innerText = data.pricing[1].price;
+    price3.innerText = data.pricing[2].price;
+    plan1.innerText = data.pricing[0].plan;
+    plan2.innerText = data.pricing[1].plan;
+    plan3.innerText = data.pricing[2].plan;
+
+
+    // features
+
+    features = document.getElementById("features");
+    features.innerHTML = "";
+        for(let i in data.features){
+            newInt = document.createElement("li");
+            newInt.style.fontSize = "14px";
+            newInt.innerText = data.features[i].feature_name;
+            features.appendChild(newInt);
+        }
+
+    // integrations
+    integrations = document.getElementById("integrations");
+    integrations.innerHTML = "";
+    if(data.integrations){
+        for(let i in data.integrations){
+            newInt = document.createElement("li");
+            newInt.style.fontSize = "14px";
+            newInt.innerText = data.integrations[i];
+            integrations.appendChild(newInt);
+        }
+    }else{
+        newInt = document.createElement("p");
+        newInt.style.fontSize = "14px";
+        newInt.innerText = "No Data Found";
+        integrations.appendChild(newInt);
+    }
+    image.src = `${data.image_link[0]}`;
+    if(data.input_output_examples === null){        
+        demoHeading.innerText = "No data Found";
+        demoResponse.innerText = "";
+    }else{
+    demoHeading.innerText = data.input_output_examples[0].input;
+    demoResponse.innerText = data.input_output_examples[0].output;   
+    }
+    if(!data.accuracy.score){
+        accuracy.classList.add("d-none");
+    }else{
+        accuracy.innerText = `${data.accuracy.score*100}%`;
+        accuracy.classList.remove("d-none");
+    }
+}
 apiload()
 
 
